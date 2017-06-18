@@ -5,16 +5,17 @@ class User{
 	function __construct($dbconn){
 		$this->db = $dbconn;
 	}
-	public function create($name,$username,$email,$password)
+	public function create($name,$username,$email,$password,$userpic)
 	{
 		try
 		{
 			$hash_password = password_hash($password,PASSWORD_DEFAULT);
-			$stmt = $this->db->prepare("INSERT INTO users (name,username,email,password) VALUES(:name, :username, :email, :password)");
+			$stmt = $this->db->prepare("INSERT INTO users (name,username,email,password,profile) VALUES(:name, :username, :email, :password,:profile)");
 			$stmt->bindparam(":name",$name);
 			$stmt->bindparam(":username",$username);
 			$stmt->bindparam(":email",$email);
 			$stmt->bindparam(":password",$hash_password);
+			$stmt->bindparam(":profile",$userpic);
 			$stmt->execute();
 			return true;
 		}
@@ -40,6 +41,19 @@ class User{
 			}
 		}
 
+		}catch(PDOException $e){
+			echo $e->getMessage();
+		}
+	}
+	public function validate_email($username){
+		try{
+		$stmt = $this->db->prepare("SELECT * FROM users WHERE username = :username");
+		$stmt->bindparam(':username',$username);
+		$stmt->execute();
+		$row = $stmt->fetch(PDO::FETCH_ASSOC);
+			if($row['username'] == $username){
+				$errMsg = 'Username was already taken';
+			}
 		}catch(PDOException $e){
 			echo $e->getMessage();
 		}

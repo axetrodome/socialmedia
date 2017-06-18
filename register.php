@@ -31,9 +31,21 @@ if(isset($_POST['submit-btn']))
 	}
 	elseif(strlen($password) < 6){
 		$errMsg = 'Password must be Atleast 6 characters';
-	}elseif($user->validate_email($username,$email)){
-
 	}else{
+		try{
+		$stmt = $dbconn->prepare("SELECT * FROM users WHERE username = :username");
+		$stmt->bindparam(':username',$username);
+		$stmt->execute();
+		$row = $stmt->fetch(PDO::FETCH_ASSOC);
+			if($row['username'] == $username){
+				$errMsg = 'Username was already taken';
+			}
+		}catch(PDOException $e){
+			echo $e->getMessage();
+		}
+	}
+
+	if(!isset($errMsg)){
 		$upload_dir = 'uploads/';
 		$imgExt = strtolower(pathinfo($imgFile,PATHINFO_EXTENSION));
 		// valid extensions

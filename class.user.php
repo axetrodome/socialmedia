@@ -45,19 +45,7 @@ class User{
 			echo $e->getMessage();
 		}
 	}
-	public function validate_email($username){
-		try{
-		$stmt = $this->db->prepare("SELECT * FROM users WHERE username = :username");
-		$stmt->bindparam(':username',$username);
-		$stmt->execute();
-		$row = $stmt->fetch(PDO::FETCH_ASSOC);
-			if($row['username'] == $username){
-				$errMsg = 'Username was already taken';
-			}
-		}catch(PDOException $e){
-			echo $e->getMessage();
-		}
-	}
+
 	public function is_loggedin(){
 		if(isset($_SESSION['user_id'])){
 			return true;

@@ -7,5 +7,5 @@ try{
 
 }
 include_once 'class.user.php';
-$user = new user($dbconn);
+$user = new User($dbconn);
 ?>

@@ -6,6 +6,9 @@
 <?php 
 session_start();
 include_once 'db.php';
+if($user->is_loggedin() != ''){
+	$user->redirect('index.php');
+}
 if(isset($_POST['submit-btn']))
 {
 	$name = $_POST['name'];

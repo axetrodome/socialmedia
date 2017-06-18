@@ -3,7 +3,7 @@
 <?php 
 session_start();
 include_once 'db.php';
-if($user->is_loggedin() != ''){
+if(!$user->is_loggedin()){
 	$user->redirect('login.php');
 }
 $user_id = $_SESSION['user_id'];

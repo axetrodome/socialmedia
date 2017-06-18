@@ -4,7 +4,9 @@
 session_start();
 include_once 'db.php';
 if(!$user->is_loggedin()){
-	$user->redirect('login.php');
+	?><script type="text/javascript">
+		alert('not working');
+	</script><?php
 }
 $user_id = $_SESSION['user_id'];
  ?>

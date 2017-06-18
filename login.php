@@ -3,9 +3,6 @@
 <?php 
 session_start();
 include_once 'db.php';
-if($user->is_loggedin() != ''){
-	$user->redirect('index.php');
-}
 if(isset($_POST['login-btn'])){
 	$name = $_POST['user'];
 	$username = $_POST['user'];

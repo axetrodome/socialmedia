@@ -16,7 +16,7 @@ class User{
 			$stmt->bindparam(":email",$email);
 			$stmt->bindparam(":password",$hash_password);
 			$stmt->execute();
-			return $stmt;
+			return true;
 		}
 		catch(PDOException $e)
 		{

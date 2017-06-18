@@ -4,11 +4,10 @@
 session_start();
 include_once 'db.php';
 if(isset($_POST['login-btn'])){
-	$name = $_POST['user'];
 	$username = $_POST['user'];
 	$password = $_POST['password'];
 
-	if($user->login($name,$username,$password)){
+	if($user->login($username,$password)){
 		$user->redirect('index.php?logged');
 	}else{
 		$user->redirect('login.php?logfailed');

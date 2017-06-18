@@ -24,14 +24,16 @@ class User{
 		}
 		
 	}
-	public function login($name,$username,$password){
+	public function login($username,$password){
 		try{	
-		$stmt = $this->db->prepare("SELECT * FROM users WHERE username = :username OR name = :name LIMIT 1");
-		$stmt->execute(array(':username'=> $username,':name'=> $name));
+		$stmt = $this->db->prepare("SELECT * FROM users WHERE username = :username");
+		$stmt->bindParam(':username',$username);
+		$stmt->execute();
 		$row = $stmt->fetch(PDO::FETCH_ASSOC);
+		// var_dump($/row);echo '<pre>',print_r($row);die();
 		if($stmt->rowCount() > 0){
 			if(password_verify($password,$row['password'])){
-				$SESSION['user_id'] = $row['id'];
+				$_SESSION['user_id'] = $row['id'];
 				return true;
 			}else{
 				return false;

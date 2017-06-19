@@ -10,7 +10,7 @@ class User{
 		try
 		{
 			$hash_password = password_hash($password,PASSWORD_DEFAULT);
-			$stmt = $this->db->prepare("INSERT INTO users (name,username,email,password,profile) VALUES(:name, :username, :email, :password,:profile)");
+			$stmt = $this->db->prepare("INSERT INTO users (name,username,email,password,image) VALUES(:name, :username, :email, :password,:profile)");
 			$stmt->bindparam(":name",$name);
 			$stmt->bindparam(":username",$username);
 			$stmt->bindparam(":email",$email);

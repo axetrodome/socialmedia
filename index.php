@@ -8,35 +8,9 @@ $user_id = $_SESSION['user_id'];
 if(!$user->is_loggedin()){
 	$user->redirect('login.php');
 }
-// if(isset($_POST['upload-btn'])){
-// 	$imgFile = $_POST['profile-image']['name'];
-// 	$tmp_dir = $_POST['profile-image']['tmp_name'];
-// 	$imgSize = $_POST['profile-image']['size'];
-
-// 	$upload_dir = 'uploads/';
-// 	$imgExt = strtolower(pathinfo($imgFile,PATHINFO_EXTENSION));
-// 	// valid extensions
-// 	$valid_extensions = array('jpeg','png','gif','jpeg');
-// 	// name of file
-// 	$userpic = rand(1000,1000000).'.'.$imgExt;
-// 	//allow valid image file formats
-// 	if(in_array($imgExt, $valid_extensions))//syntax(array,search,type)
-// 	{
-// 		//check file size '5mb'
-// 		if($imageSize > 5000000){
-// 			move_uploaded_file($imgFile, $tmp_dir,$userpic);
-// 		}else{
-// 			$errMsg = 'Sorry file is too large';
-// 		}
-
-// 	}else{
-// 		$errMsg = 'Sorry Only JPG,JPEG,GIF and PNG files are allowed';
-// 	}
-// 	if(!isset($errMsg)){
-// 		if($user->Upload_image())
-
-// 	}
-// }
+$sql = $dbconn->prepare("SELECT * FROM users WHERE id = $user_id");
+$sql->execute();
+$row = $sql->fetch(PDO::FETCH_ASSOC);
 
  ?>
 <head>
@@ -50,6 +24,7 @@ if(isset($_GET['logged'])){
 	<?php
 }
  ?>
+ <img src="uploads/<?php echo $row['image']?>" style="width:70px;height:70px;border-radius:100%;">
  <form method="POST" enctype="multipart/form-data">
  	<input type="file" name="profile-image">
  	<button type="submit" name="upload-btn">Upload</button>

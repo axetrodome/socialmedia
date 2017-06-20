@@ -3,14 +3,48 @@
 <?php 
 session_start();
 include_once 'db.php';
-$errMsg = '';
-$user_id = $_SESSION['user_id'];
+$errphp = false;
+$id = $_SESSION['id'];
 if(!$user->is_loggedin()){
 	$user->redirect('login.php');
 }
-$sql = $dbconn->prepare("SELECT * FROM users WHERE id = $user_id");
+$sql = $dbconn->prepare("SELECT * FROM users WHERE id = $id");
 $sql->execute();
 $row = $sql->fetch(PDO::FETCH_ASSOC);
+if(isset($_POST['upload-btn']))
+{
+	$imgFile = $_FILES['profile-image']['name'];
+	$tmp_dir = $_FILES['profile-image']['tmp_name'];
+	$imgSize = $_FILES['profile-image']['size'];
+
+
+	$upload_dir = "uploads/";
+	$imgExt = strtolower(pathinfo($imgFile,PATHINFO_EXTENSION));
+	$valid_extension = array('jpg','jpeg','gif','png');
+	$user_pic = rand(10000,1000000).'.'.$imgExt;
+
+	if(in_array($imgExt, $valid_extension)){
+		if($imgSize < 5000000){
+			move_uploaded_file($tmp_dir, $upload_dir, $user_pic);
+		}else{
+			$errImg = "Image is too large";
+			$errphp = true;
+		}
+	}else{
+		$errImg = "Only JPG, JPEG,GIF,PNG are allowed";
+		$errphp = true;
+	}
+
+	if($errphp == false){
+		if($user->edit_profile($name,$username,$email,$password,$id)){
+
+		}else{
+
+		}
+	}
+
+	
+}
 
  ?>
 <head>
@@ -20,12 +54,13 @@ $row = $sql->fetch(PDO::FETCH_ASSOC);
 <?php
 if(isset($_GET['logged'])){
 	?>
-	<p style="color:green;font-weight:bold">You are logged in as user number <?php echo $user_id; ?>!</p>
+	<p style="color:green;font-weight:bold">Welcome user number <?php echo $id; ?>!</p>
 	<?php
 }
  ?>
- <img src="uploads/<?php echo $row['image']?>" style="width:70px;height:70px;border-radius:100%;">
  <form method="POST" enctype="multipart/form-data">
+ <img src="uploads/<?php echo $row['image']?>" style="width:70px;height:70px;border-radius:100%;">
+ 	
  	<input type="file" name="profile-image">
  	<button type="submit" name="upload-btn">Upload</button>
  </form>

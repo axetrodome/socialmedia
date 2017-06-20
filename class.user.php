@@ -25,6 +25,16 @@ class User{
 		}
 		
 	}
+	public function edit_profile($name,$username,$email,$password,$id){
+		try{
+			
+			return true;
+		}catch(PDOException $e){
+			echo $e->getMessage();
+			return false;
+		}
+
+	}
 	public function login($username,$password){
 		try{	
 		$stmt = $this->db->prepare("SELECT * FROM users WHERE username = :username");

@@ -6,11 +6,11 @@
 <?php 
 session_start();
 $errphp = false;
-$errName = $errUsername = $errEmail = $errPass = $errImg = $errImgExt = $errMSG = "";
 include_once 'db.php';
 if($user->is_loggedin() != ''){
 	$user->redirect('index.php');
 }
+
 if($_SERVER['REQUEST_METHOD'] == 'POST'){
 	if(isset($_POST['submit-btn']))
 	{
@@ -23,46 +23,52 @@ if($_SERVER['REQUEST_METHOD'] == 'POST'){
 		$email = $_POST['email'];
 		$password = $_POST['password'];
 		if(empty($name)){
-			$errName = 'Please Enter Name';
+			$error[] = 'Please Enter Name';
 			$errphp = true;
 		}else{
 			if(!preg_match("/^[A-Za-z]*$/", $name)){
-				$errName = "Letters and White space Only";
+				$error[] = "Letters and White space Only";
 				$errphp = true;
 			}
 		} 
 		if(empty($username)){
-			$errUsername = 'Please Enter Username';
-			
+			$error[] = 'Please Enter Username';
+			$errphp = true;
 		}else{
 			try{
-			$stmt = $dbconn->prepare("SELECT * FROM users WHERE username = :username");
+			$stmt = $dbconn->prepare("SELECT * FROM users WHERE username = :username OR email = :email");
 			$stmt->bindparam(':username',$username);
+			$stmt->bindparam(':email',$email);
 			$stmt->execute();
 			$row = $stmt->fetch(PDO::FETCH_ASSOC);
 				if($row['username'] == $username){
-					$errUsername = 'Username was already taken';
+					$error[] = 'Username was already taken';
 					$errphp = true;
 				}
 			}catch(PDOException $e){
 				echo $e->getMessage();
 			}
 		}
+
 		if(empty($email)){
-			$errEmail = 'Please Enter E-mail';
+			$error[] = 'Please Enter E-mail';
 			$errphp = true;
 		}else{
 			if(!filter_var($email,FILTER_VALIDATE_EMAIL)){
-				$errEmail = "Invalid E-mail format";
+				$error[] = "Invalid E-mail format";
+				$errphp = true;
+			}
+			elseif($row['email'] == $email){
+				$error[] = 'Email was already taken';
 				$errphp = true;
 			}
 		} 
 
 		if(empty($password)){
-			$errPass = 'Please Enter Password';
+			$error[] = 'Please Enter Password';
 		}else{
 			if(strlen($password) < 6){
-				$errPass = "Password must contain atleast 6 Characters";
+				$error[] = "Password must contain atleast 6 Characters";
 			}
 		}
 		// IMAGE UPLOAD
@@ -80,12 +86,12 @@ if($_SERVER['REQUEST_METHOD'] == 'POST'){
 				     move_uploaded_file($tmp_dir,$upload_dir.$userpic);
 				    }
 				    else{
-				   	 $errImg = "File is too big";
+				   	 $error[] = "File is too big";
 				   	 $errphp = true;
 				    }
 
 			}else{
-				$errImgExt = "Only JPG,PNG,JPEG,GIF are allowed";
+				$error[] = "Only JPG,PNG,JPEG,GIF are allowed";
 				$errphp = true;
 			}
 
@@ -97,7 +103,7 @@ if($_SERVER['REQUEST_METHOD'] == 'POST'){
 					}
 					else
 					{
-						$errMSG = "error while inserting....";
+						$error[] = "error while inserting....";
 					}
 				}
 		//END OF IMAGE UPLOAD
@@ -111,18 +117,19 @@ if(isset($_GET['inserted'])){
 	<div style="color:green">Successfully Inserted!</div>
 <?php
 }
+if(isset($error)){
+	foreach($error as $errors) {
+		?>
+		<div style="color:red"><?php echo $errors ?></div>
+		<?php
+	}
+}
 ?>
-<div style="color:red"><?php echo $errName ?></div>
-<div style="color:red"><?php echo $errUsername ?></div>
-<div style="color:red"><?php echo $errEmail ?></div>
-<div style="color:red"><?php echo $errPass ?></div>
-<div style="color:red"><?php echo $errImgExt ?></div>
-<div style="color:red"><?php echo $errMSG ?></div>
 <form method="POST" enctype="multipart/form-data" action="<?php echo htmlspecialchars($_SERVER['PHP_SELF']) ?>">
 	<input type="file" name="profile-image">
-	<input type="text" name="name" placeholder="Name">
-	<input type="text" name="username" placeholder="Username">
-	<input type="email" name="email" placeholder="E-mail">
+	<input type="text" name="name" placeholder="Name" value="<?php echo $name = (isset($error)) ? $name : '';  ?>">
+	<input type="text" name="username" placeholder="Username" value="<?php echo $username = (isset($error)) ? $name : ''; ?>">
+	<input type="email" name="email" placeholder="E-mail" value="<?php echo $email  = (isset($error)) ? $name : ''; ?>">
 	<input type="password" name="password" placeholder="Password">
 	<button type="submit" name="submit-btn">Register</button>
 </form>

@@ -37,7 +37,7 @@ if(isset($_POST['upload-btn']))
 
 	if($errphp == false){
 		if($user->edit_profile($name,$username,$email,$password,$id)){
-
+			
 		}else{
 
 		}

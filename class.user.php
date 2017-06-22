@@ -38,7 +38,12 @@ class User{
 		}
 
 	}
-
+	public function Email_validation($email){
+		return !filter_var($email,FILTER_VALIDATE_EMAIL);
+	}
+	public function Name_validation($name){
+		return !preg_match("/^[A-Za-z]*$/", $name);
+	}
 	public function login($username,$password){
 		try{	
 		$stmt = $this->db->prepare("SELECT * FROM users WHERE username = :username");

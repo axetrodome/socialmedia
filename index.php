@@ -46,7 +46,6 @@ if(isset($_POST['upload-btn']))
 		}
 	}
 }
-
  ?>
 <head>
 	<title>Welcome page</title>
@@ -61,10 +60,9 @@ if(isset($_GET['logged'])){
  ?>
  <p style="color:green;font-weight:bold"><?php echo $success; ?></p>
  <form method="POST" enctype="multipart/form-data">
- <img src="uploads/<?php echo $row['image']?>" style="width:70px;height:70px;border-radius:100%;">
- 	
- 	<input type="file" name="profile-image">
- 	<button type="submit" name="upload-btn">Upload</button>
+ 	<img src="uploads/<?php echo $row['image']?>" style="width:70px;height:70px;border-radius:100%;"><br>
+	<input type="file" name="profile-image"><br>
+	<button type="submit" name="upload-btn">Upload</button>
  </form>
  <form action="logout.php">
  	<button type="submit" name="logout-btn">Logout</button>

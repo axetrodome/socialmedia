@@ -6,15 +6,14 @@
 <?php 
 session_start();
 $errphp = false;
+$success = '';
 include_once 'db.php';
 if($user->is_loggedin() != ''){
 	$user->redirect('index.php');
 }
-
 if($_SERVER['REQUEST_METHOD'] == 'POST'){
 	if(isset($_POST['submit-btn']))
 	{
-
 		$imgFile = $_FILES['profile-image']['name'];
 		$tmp_dir = $_FILES['profile-image']['tmp_name'];
 		$imgSize = $_FILES['profile-image']['size'];
@@ -34,9 +33,7 @@ if($_SERVER['REQUEST_METHOD'] == 'POST'){
 		}else{
 			try{
 			$stmt = $dbconn->prepare("SELECT * FROM users WHERE username = :username OR email = :email");
-			$stmt->bindparam(':username',$username);
-			$stmt->bindparam(':email',$email);
-			$stmt->execute();
+			$stmt->execute(array(':username'=>$username,':email'=>$email));
 			$row = $stmt->fetch(PDO::FETCH_ASSOC);
 				if($row['username'] == $username){
 					$error[] = 'Username was already taken';
@@ -46,7 +43,6 @@ if($_SERVER['REQUEST_METHOD'] == 'POST'){
 				echo $e->getMessage();
 			}
 		}
-
 		if(empty($email)){
 			$error[] = 'Please Enter E-mail';
 			$errphp = true;
@@ -56,15 +52,11 @@ if($_SERVER['REQUEST_METHOD'] == 'POST'){
 		}elseif($row['email'] == $email){
 				$error[] = 'Email was already taken';
 				$errphp = true;
-			}
-
-		if(empty($password)){
+		}elseif(empty($password)){
 			$error[] = 'Please Enter Password';
-		}else{
-			if(strlen($password) < 6){
+		}elseif($user->PasswordLength($password)){
 				$error[] = "Password must contain atleast 6 Characters";
 			}
-		}
 		// IMAGE UPLOAD
 			$upload_dir = 'uploads/';
 			$imgExt = strtolower(pathinfo($imgFile,PATHINFO_EXTENSION));
@@ -88,12 +80,11 @@ if($_SERVER['REQUEST_METHOD'] == 'POST'){
 				$error[] = "Only JPG,PNG,JPEG,GIF are allowed";
 				$errphp = true;
 			}
-
 				if($errphp == false)
 				{
 					if($user->create($name,$username,$email,$password,$userpic))
 					{
-						header("Location:register.php?inserted"); // redirects image view page after 5 seconds.
+						$success = "Successfully Inserted!"; // redirects image view page after 5 seconds.
 					}
 					else
 					{
@@ -105,12 +96,8 @@ if($_SERVER['REQUEST_METHOD'] == 'POST'){
 }
  ?>
 <body>
-<?php 
-if(isset($_GET['inserted'])){
-?>
-	<div style="color:green">Successfully Inserted!</div>
+	<div style="color:green"><?php echo $success; ?></div>
 <?php
-}
 if(isset($error)){
 	foreach($error as $errors) {
 		?>

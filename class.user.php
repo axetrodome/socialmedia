@@ -23,7 +23,6 @@ class User{
 		{
 			echo $e->getMessage();	
 		}
-		
 	}
 	public function edit_profile($id,$user_pic){
 		try{
@@ -44,6 +43,9 @@ class User{
 	public function Name_validation($name){
 		return !preg_match("/^[A-Za-z]*$/", $name);
 	}
+	public function PasswordLength($password){
+		return strlen($password) < 6;
+	}
 	public function login($username,$password){
 		try{	
 		$stmt = $this->db->prepare("SELECT * FROM users WHERE username = :username");
@@ -59,7 +61,6 @@ class User{
 				return false;
 			}
 		}
-
 		}catch(PDOException $e){
 			echo $e->getMessage();
 		}

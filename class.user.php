@@ -25,9 +25,12 @@ class User{
 		}
 		
 	}
-	public function edit_profile($name,$username,$email,$password,$id){
+	public function edit_profile($id,$user_pic){
 		try{
-			
+			$stmt = $this->db->prepare("UPDATE users SET image = :image WHERE id = :id");
+			$stmt->bindParam(":image",$user_pic);
+			$stmt->bindParam(":id",$id);
+			$stmt->execute();
 			return true;
 		}catch(PDOException $e){
 			echo $e->getMessage();
@@ -35,6 +38,7 @@ class User{
 		}
 
 	}
+
 	public function login($username,$password){
 		try{	
 		$stmt = $this->db->prepare("SELECT * FROM users WHERE username = :username");

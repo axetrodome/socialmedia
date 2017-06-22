@@ -4,6 +4,7 @@
 session_start();
 include_once 'db.php';
 $errphp = false;
+$success = '';
 $id = $_SESSION['user_id'];
 if(!$user->is_loggedin()){
 	$user->redirect('login.php');
@@ -25,7 +26,8 @@ if(isset($_POST['upload-btn']))
 
 	if(in_array($imgExt, $valid_extension)){
 		if($imgSize < 5000000){
-			move_uploaded_file($tmp_dir, $upload_dir, $user_pic);
+			unlink($upload_dir.$row['image']);
+			move_uploaded_file($tmp_dir, $upload_dir.$user_pic);
 		}else{
 			$errImg = "Image is too large";
 			$errphp = true;
@@ -36,14 +38,13 @@ if(isset($_POST['upload-btn']))
 	}
 
 	if($errphp == false){
-		if($user->edit_profile($name,$username,$email,$password,$id)){
-			
+		if($user->edit_profile($id,$user_pic)){
+			$success = "Profile updated Successfuly";			
 		}else{
-
+			$error[] = "Error while Updating";
+			$errphp = true;
 		}
 	}
-
-	
 }
 
  ?>
@@ -58,6 +59,7 @@ if(isset($_GET['logged'])){
 	<?php
 }
  ?>
+ <p style="color:green;font-weight:bold"><?php echo $success; ?></p>
  <form method="POST" enctype="multipart/form-data">
  <img src="uploads/<?php echo $row['image']?>" style="width:70px;height:70px;border-radius:100%;">
  	

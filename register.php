@@ -46,6 +46,9 @@ if($_SERVER['REQUEST_METHOD'] == 'POST'){
 		if(empty($email)){
 			$error[] = 'Please Enter E-mail';
 			$errphp = true;
+		}elseif(empty($username)){
+			$error[] = 'Enter Username';
+			$errphp = true;
 		}elseif($user->Email_validation($email)){
 				$error[] = "Invalid E-mail format";
 				$errphp = true;
@@ -56,7 +59,7 @@ if($_SERVER['REQUEST_METHOD'] == 'POST'){
 			$error[] = 'Please Enter Password';
 		}elseif($user->PasswordLength($password)){
 				$error[] = "Password must contain atleast 6 Characters";
-			}
+		}
 		// IMAGE UPLOAD
 			$upload_dir = 'uploads/';
 			$imgExt = strtolower(pathinfo($imgFile,PATHINFO_EXTENSION));
@@ -76,7 +79,7 @@ if($_SERVER['REQUEST_METHOD'] == 'POST'){
 				   	 $errphp = true;
 				    }
 
-			}else{
+			}else{	
 				$error[] = "Only JPG,PNG,JPEG,GIF are allowed";
 				$errphp = true;
 			}
@@ -108,9 +111,9 @@ if(isset($error)){
 ?>
 <form method="POST" enctype="multipart/form-data" action="<?php echo htmlspecialchars($_SERVER['PHP_SELF']) ?>">
 	<input type="file" name="profile-image">
-	<input type="text" name="name" placeholder="Name" value="<?php echo $name = (isset($error)) ? $name : '';  ?>">
-	<input type="text" name="username" placeholder="Username" value="<?php echo $username = (isset($error)) ? $username : ''; ?>">
-	<input type="email" name="email" placeholder="E-mail" value="<?php echo $email  = (isset($error)) ? $email : ''; ?>">
+	<input type="text" name="name" placeholder="Name" value="<?php echo (isset($error)) ? $name : '';  ?>">
+	<input type="text" name="username" placeholder="Username" value="<?php echo (isset($error)) ? $username : ''; ?>">
+	<input type="email" name="email" placeholder="E-mail" value="<?php echo (isset($error)) ? $email : ''; ?>">
 	<input type="password" name="password" placeholder="Password">
 	<button type="submit" name="submit-btn">Register</button>
 </form>

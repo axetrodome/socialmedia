@@ -24,9 +24,24 @@ class User{
 			echo $e->getMessage();	
 		}
 	}
-	public function edit_profile($id,$user_pic){
+	public function getID($id){
+		$stmt = $this->db->prepare("SELECT * FROM users WHERE id = :id");
+		$stmt->execute(array(':id' => $id));			
+		$row = $stmt->fetch(PDO::FETCH_ASSOC);
+		return $row;
+	}
+	public function edit_profile($name,$username,$email,$password,$user_pic,$id){
 		try{
-			$stmt = $this->db->prepare("UPDATE users SET image = :image WHERE id = :id");
+			$hash_password = password_hash($password,PASSWORD_DEFAULT);
+			$stmt = $this->db->prepare("UPDATE users SET name = :name, 
+														username = :username, 
+														email =:email, 
+														password = :password,
+														image = :image WHERE id = :id");
+			$stmt->bindparam(":name",$name);
+			$stmt->bindparam(":username",$username);
+			$stmt->bindparam(":email",$email);
+			$stmt->bindparam(":password",$hash_password);
 			$stmt->bindParam(":image",$user_pic);
 			$stmt->bindParam(":id",$id);
 			$stmt->execute();
@@ -52,7 +67,7 @@ class User{
 		$stmt->bindParam(':username',$username);
 		$stmt->execute();
 		$row = $stmt->fetch(PDO::FETCH_ASSOC);
-		// var_dump($/row);echo '<pre>',print_r($row);die();
+		// var_dump($row);echo '<pre>',print_r($row);die();
 		if($stmt->rowCount() > 0){
 			if(password_verify($password,$row['password'])){
 				$_SESSION['user_id'] = $row['id'];

@@ -59,11 +59,8 @@ if(isset($_GET['logged'])){
 }
  ?>
  <p style="color:green;font-weight:bold"><?php echo $success; ?></p>
- <form method="POST" enctype="multipart/form-data">
- 	<img src="uploads/<?php echo $row['image']?>" style="width:70px;height:70px;border-radius:100%;"><br>
-	<input type="file" name="profile-image"><br>
-	<button type="submit" name="upload-btn">Upload</button>
- </form>
+ <img src="uploads/<?php echo $row['image']?>" style="width:70px;height:70px;border-radius:100%;"><h3><?= $row['name'];  ?></h3><br>
+ <a href="edit.php?id=<?php echo $row['id']; ?>">Edit profile</a>
  <form action="logout.php">
  	<button type="submit" name="logout-btn">Logout</button>
  </form>

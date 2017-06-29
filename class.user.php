@@ -25,12 +25,12 @@ class User{
 		}
 	}
 	public function getID($id){
-		$stmt = $this->db->prepare("SELECT name,username,email,password,image FROM users WHERE id = :id");
+		$stmt = $this->db->prepare("SELECT * FROM users WHERE id = :id");
 		$stmt->execute(array(':id' => $id));			
 		$row = $stmt->fetch(PDO::FETCH_ASSOC);
 		return $row;
 	}
-	public function edit_profile($name,$username,$email,$password,$user_pic,$id){
+	public function edit_profile($name,$username,$email,$password,$userpic,$id){
 		try{
 			$hash_password = password_hash($password,PASSWORD_DEFAULT);
 			$stmt = $this->db->prepare("UPDATE users SET name = :name, 
@@ -42,7 +42,7 @@ class User{
 			$stmt->bindparam(":username",$username);
 			$stmt->bindparam(":email",$email);
 			$stmt->bindparam(":password",$hash_password);
-			$stmt->bindParam(":image",$user_pic);
+			$stmt->bindParam(":image",$userpic);
 			$stmt->bindParam(":id",$id);
 			$stmt->execute();
 			return true;

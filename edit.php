@@ -22,16 +22,16 @@ if(isset($_POST['edit'])){
 	$imgSize = $_FILES['profile-image']['size'];
 
 	if($imgFile){
-		$upload_dir = 'uploads/';
-		$valid_extensions = array('jpeg','jpg','gif','png');
+		$upload_dir = "uploads/";
 		$imgExt = strtolower(pathinfo($imgFile,PATHINFO_EXTENSION));
-		$user_pic = rand(1000,1000000).'.'.$imgExt;
+		$valid_extensions = array('jpeg','jpg','gif','png');
+		$userpic = rand(10000,1000000).'.'.$imgExt;
 		
 		if(in_array($imgExt, $valid_extensions)){
 
 			if($imgSize < 5000000){
 				unlink($upload_dir.$image);
-				move_uploaded_file($tmp_dir, $upload_dir.$user_pic);
+				move_uploaded_file($tmp_dir, $upload_dir.$userpic);
 			}else{
 				$error[] = 'Image size is too big';
 			}
@@ -39,18 +39,19 @@ if(isset($_POST['edit'])){
 			$error[] = 'Only JPEG,GIF,PNG,JPG are allowed';
 		}
 	}else{
-		$user_pic = $image;
+		$userpic = $image;
 	}
 
 
-	if(!$error){
-		if($user->edit_profile($name,$username,$email,$password,$id,$user_pic)){
-			$success = 'Profile Successfuly Updated';
+	if(!isset($error)){
+		if($user->edit_profile($name,$username,$email,$password,$id,$userpic)){
+			$success = 'Successfuly inserted';
 		}
 	}else{
 		$error[] = 'Error while Updating';
 	}
 }
+
 ?>
 <!DOCTYPE html>
 <html>

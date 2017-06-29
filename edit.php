@@ -25,7 +25,7 @@ if(isset($_POST['edit'])){
 		$upload_dir = 'uploads/';
 		$valid_extensions = array('jpeg','jpg','gif','png');
 		$imgExt = strtolower(pathinfo($imgFile,PATHINFO_EXTENSION));
-		$user_pic = rand(1000,1000000).'.'.$imgFile;
+		$user_pic = rand(1000,1000000).'.'.$imgExt;
 		
 		if(in_array($imgExt, $valid_extensions)){
 

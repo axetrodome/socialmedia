@@ -31,7 +31,6 @@ if(isset($_POST['edit'])){
 	if(in_array($imgExt, $valid_extensions)){
 
 		if($imgSize < 5000000){
-			unlink($upload_dir.$image);
 			move_uploaded_file($tmp_dir, $upload_dir.$user_pic);
 		}else{
 			$errphp = true;

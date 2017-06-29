@@ -4,7 +4,6 @@ session_start();
 if(!$user->is_loggedin()){
 	$user->redirect('login.php');
 }
-$errphp = false;
 $error = [];
 $success = '';
 if(isset($_GET['id']))
@@ -22,31 +21,33 @@ if(isset($_POST['edit'])){
 	$tmp_dir = $_FILES['profile-image']['tmp_name'];
 	$imgSize = $_FILES['profile-image']['size'];
 
-	$upload_dir = 'uploads/';
-	$valid_extensions = array('jpeg','jpg','gif','png');
-	$imgExt = strtolower(pathinfo($imgFile,PATHINFO_EXTENSION));
-	$user_pic = rand(1000,1000000).'.'.$imgFile;
+	if($imgFile){
+		$upload_dir = 'uploads/';
+		$valid_extensions = array('jpeg','jpg','gif','png');
+		$imgExt = strtolower(pathinfo($imgFile,PATHINFO_EXTENSION));
+		$user_pic = rand(1000,1000000).'.'.$imgFile;
+		
+		if(in_array($imgExt, $valid_extensions)){
 
-
-	if(in_array($imgExt, $valid_extensions)){
-
-		if($imgSize < 5000000){
-			unlink($upload_dir.$image);
-			move_uploaded_file($tmp_dir, $upload_dir.$user_pic);
+			if($imgSize < 5000000){
+				unlink($upload_dir.$image);
+				move_uploaded_file($tmp_dir, $upload_dir.$user_pic);
+			}else{
+				$error[] = 'Image size is too big';
+			}
 		}else{
-			$errphp = true;
-			$error[] = 'Image size is too big';
+			$error[] = 'Only JPEG,GIF,PNG,JPG are allowed';
 		}
 	}else{
-		$errphp = true;
-		$error[] = 'Only JPEG,GIF,PNG,JPG are allowed';
+		$user_pic = $image;
 	}
-	if($errphp == false){
+
+
+	if(!$error){
 		if($user->edit_profile($name,$username,$email,$password,$id,$user_pic)){
 			$success = 'Profile Successfuly Updated';
 		}
 	}else{
-		$errphp = true;
 		$error[] = 'Error while Updating';
 	}
 }
@@ -57,6 +58,7 @@ if(isset($_POST['edit'])){
 	<title>Edit</title>
 </head>
 <body>
+<div style="color:green"><?php echo $success; ?></div>
 <?php
 if(isset($error)){
 	foreach($error as $errors) {
@@ -72,8 +74,11 @@ if(isset($error)){
 	<input type="text" name="name" value="<?php echo $name; ?>"><br>
 	<input type="text" name="username" value="<?php echo $username; ?>"><br>
 	<input type="email" name="email" value="<?php echo $email; ?>"><br>
-	<input type="text" name="password" value="<?php echo $password; ?>"><br>
+	<input type="password" name="password" value="<?php echo $password; ?>"><br>
 	<button type="submit" name="edit">Update</button>
+</form>
+<form action="logout.php">
+	<button type="submit">Logout</button>
 </form>
 </body>
 </html>

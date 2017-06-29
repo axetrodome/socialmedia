@@ -26,9 +26,7 @@ if(isset($_GET['logfailed']))
 	<p style="color:red;font-weight:bold">Wrong password or username</p>
 	<?php
 }
-
 ?>
-
 <form method="POST" action="<?php echo htmlspecialchars($_SERVER['PHP_SELF']); ?>">
 	<input type="text" name="user" placeholder="Username" required="">
 	<input type="password" name="password" placeholder="Password" required="">

@@ -25,7 +25,7 @@ class User{
 		}
 	}
 	public function getID($id){
-		$stmt = $this->db->prepare("SELECT * FROM users WHERE id = :id");
+		$stmt = $this->db->prepare("SELECT name,username,email,password,image FROM users WHERE id = :id");
 		$stmt->execute(array(':id' => $id));			
 		$row = $stmt->fetch(PDO::FETCH_ASSOC);
 		return $row;

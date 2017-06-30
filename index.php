@@ -8,10 +8,7 @@ $id = $_SESSION['user_id'];
 if(!$user->is_loggedin()){
 	$user->redirect('login.php');
 }
-$sql = $dbconn->prepare("SELECT * FROM users WHERE id = :id");
-$sql->execute(array(':id'=> $id));
-$row = $sql->fetch(PDO::FETCH_ASSOC);
-extract($row);
+extract($user->getID($id));
 if(isset($_POST['upload-btn']))
 {
 	$imgFile = $_FILES['profile-image']['name'];
@@ -41,7 +38,7 @@ if(isset($_POST['upload-btn']))
 	if($imgFile){
 		if(in_array($imgExt, $valid_extension)){
 			if($imgSize < 5000000){
-				unlink($upload_dir.$row['image']);
+				unlink($upload_dir.$image);
 				move_uploaded_file($tmp_dir, $upload_dir.$user_pic);
 			}else{
 				$error[] = "Image is too large";
@@ -50,7 +47,7 @@ if(isset($_POST['upload-btn']))
 			$error[] = "Only JPG, JPEG,GIF,PNG are allowed";
 		}
 	}else{
-		$user_pic = $row['image'];
+		$user_pic = $image;
 	}
 	if(!isset($error)){
 		if($user->edit_profile($name,$username,$password,$id,$user_pic)){
@@ -77,13 +74,13 @@ if(isset($_GET['logged'])){
 if(isset($error)){
 	foreach($error as $errors) {
 		?>
-		<div style="color:red"><?php echo $errors ?></div>
+		<div style="color:red"><?php echo $errors; ?></div>
 		<?php
 	}
 }
 ?>
  <form method="POST" enctype="multipart/form-data" action="index.php">
- <img src="uploads/<?php echo $row['image'] ?>" style="width:70px;height:70px;border-radius:100%;"><h3><?php $row['name'];  ?></h3><br>
+ <img src="uploads/<?php echo $image ?>" style="width:70px;height:70px;border-radius:100%;"><h3><?php $name;  ?></h3><br>
  	<input type="file" name="profile-image"><br>
  	<input type="text" name="name" value="<?php echo $name; ?>"><br>
  	<input type="text" name="username" value="<?php echo $username; ?>"><br>

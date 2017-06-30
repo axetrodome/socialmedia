@@ -20,34 +20,29 @@ if($_SERVER['REQUEST_METHOD'] == 'POST'){
 		$username = $_POST['username'];
 		$email = $_POST['email'];
 		$password = $_POST['password'];
+
+		$row = $user->Validations($username,$email);
+		
 		if(empty($name)){
 			$error[] = 'Please Enter Name';
-		}elseif($user->Name_validation($name)){
-				$error[] = "Letters and White space Only";
 		}elseif(empty($username)){
 			$error[] = 'Please Enter Username';
-		}else{
-			try{
-			$stmt = $dbconn->prepare("SELECT * FROM users WHERE username = :username OR email = :email");
-			$stmt->execute(array(':username'=>$username,':email'=>$email));
-			$row = $stmt->fetch(PDO::FETCH_ASSOC);
-				if($row['username'] == $username){
-					$error[] = 'Username was already taken';
-				}
-			}catch(PDOException $e){
-				echo $e->getMessage();
-			}
-		}
-		if(empty($email)){
+		}elseif(empty($email)){
 			$error[] = 'Please Enter E-mail';
-		}elseif(empty($username)){
-			$error[] = 'Enter Username';
 		}elseif($user->Email_validation($email)){
 				$error[] = "Invalid E-mail format";
-		}elseif($row['email'] == $email){
-				$error[] = 'Email was already taken';
 		}elseif(empty($password)){
 			$error[] = 'Please Enter Password';
+		}elseif(empty($password)){
+			$error[] = 'Please Enter Password';
+		}elseif($row['username'] == $username){
+					$error[] = 'Username was already taken';
+		}elseif($row['email'] == $email){
+				$error[] = 'Email was already taken';
+		}elseif($user->Name_validation($name)){
+				$error[] = "Letters and White space Only";
+		}elseif($user->Email_validation($email)){
+				$error[] = "Invalid E-mail format";
 		}elseif($user->PasswordLength($password)){
 				$error[] = "Password must contain atleast 6 Characters";
 		}
@@ -62,7 +57,7 @@ if($_SERVER['REQUEST_METHOD'] == 'POST'){
 			if(in_array($imgExt, $valid_extensions))//syntax(array,search,type)
 			{
 				//check file size '5mb'
-				if($imgSize < 5000000)    {
+				if($imgSize < 5000000){
 				     move_uploaded_file($tmp_dir,$upload_dir.$userpic);
 				    }
 				    else{
@@ -74,12 +69,10 @@ if($_SERVER['REQUEST_METHOD'] == 'POST'){
 			}
 				if(!isset($error))
 				{
-					if($user->create($name,$username,$email,$password,$userpic))
-					{
+					if($user->create($name,$username,$email,$password,$userpic)){
 						$success = "Successfully Inserted!"; // redirects image view page after 5 seconds.
 					}
-					else
-					{
+					else{
 						$error[] = "error while inserting....";
 					}
 				}

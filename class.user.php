@@ -30,17 +30,16 @@ class User{
 		$row = $stmt->fetch(PDO::FETCH_ASSOC);
 		return $row;
 	}
-	public function edit_profile($name,$username,$email,$password,$id,$user_pic){
+	public function edit_profile($name,$username,$password,$id,$user_pic){
 		try{
+			$hash_password = password_hash($password,PASSWORD_DEFAULT);
 			$stmt = $this->db->prepare("UPDATE users SET image = :image,
-														email = :email,
 														password = :password,
 														username = :username,
 														name = :name WHERE id = :id");
 			$stmt->bindparam(":name",$name);
 			$stmt->bindparam(":username",$username);
-			$stmt->bindparam(":email",$email);
-			$stmt->bindparam(":password",$password);
+			$stmt->bindparam(":password",$hash_password);
 			$stmt->bindParam(":id",$id);
 			$stmt->bindParam(":image",$user_pic);
 			$stmt->execute();

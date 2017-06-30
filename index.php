@@ -3,7 +3,6 @@
 <?php 
 session_start();
 include_once 'db.php';
-$errphp = false;
 $success = '';
 $id = $_SESSION['user_id'];
 if(!$user->is_loggedin()){
@@ -20,25 +19,18 @@ if(isset($_POST['upload-btn']))
 	$imgSize = $_FILES['profile-image']['size'];
 	$name = $_POST['name'];
 	$username = $_POST['username'];
-	$email = $_POST['email'];
+	$password = $_POST['password'];
 
 	$upload_dir = "uploads/";
 	$imgExt = strtolower(pathinfo($imgFile,PATHINFO_EXTENSION));
 	$valid_extension = array('jpg','jpeg','gif','png');
 	$user_pic = rand(10000,1000000).'.'.$imgExt;
-
 	if(empty($name)){
 		$error[] = 'Please Enter Name';
 	}elseif($user->Name_validation($name)){
 			$error[] = "Letters and White space Only";
 	}elseif(empty($username)){
 		$error[] = 'Please Enter Username';
-	}elseif(empty($email)){
-		$error[] = 'Please Enter E-mail';
-	}elseif(empty($username)){
-		$error[] = 'Enter Username';
-	}elseif($user->Email_validation($email)){
-			$error[] = "Invalid E-mail format";
 	}
 	elseif(empty($password)){
 		$error[] = 'Please Enter Password';
@@ -49,25 +41,22 @@ if(isset($_POST['upload-btn']))
 	if($imgFile){
 		if(in_array($imgExt, $valid_extension)){
 			if($imgSize < 5000000){
+				unlink($upload_dir.$row['image']);
 				move_uploaded_file($tmp_dir, $upload_dir.$user_pic);
 			}else{
-				$errImg = "Image is too large";
-				$errphp = true;
+				$error[] = "Image is too large";
 			}
 		}else{
-			$errImg = "Only JPG, JPEG,GIF,PNG are allowed";
-			$errphp = true;
+			$error[] = "Only JPG, JPEG,GIF,PNG are allowed";
 		}
 	}else{
 		$user_pic = $row['image'];
 	}
-
-	if($errphp == false){
-		if($user->edit_profile($name,$username,$email,$password,$id,$user_pic)){
+	if(!isset($error)){
+		if($user->edit_profile($name,$username,$password,$id,$user_pic)){
 			$success = "Profile updated Successfuly";			
 		}else{
 			$error[] = "Error while Updating";
-			$errphp = true;
 		}
 	}
 }
@@ -82,19 +71,17 @@ if(isset($_GET['logged'])){
 	<p style="color:green;font-weight:bold">Welcome user number <?php echo $id; ?>!</p>
 	<?php
 }
+ ?>
+<p style="color:green;font-weight:bold"><?php echo $success; ?></p>
+<?php
 if(isset($error)){
 	foreach($error as $errors) {
 		?>
-		<div style="color:red;"><?php echo $errors ?></div>
+		<div style="color:red"><?php echo $errors ?></div>
 		<?php
 	}
 }
-if(isset($success)){
-	?>
-	<p style="color:green;font-weight:bold"><?php echo $success; ?></p>
-	<?php
-}
- ?>
+?>
  <form method="POST" enctype="multipart/form-data" action="index.php">
  <img src="uploads/<?php echo $row['image'] ?>" style="width:70px;height:70px;border-radius:100%;"><h3><?php $row['name'];  ?></h3><br>
  	<input type="file" name="profile-image"><br>
@@ -103,7 +90,6 @@ if(isset($success)){
  	<input type="password" name="password" value="<?php echo $password; ?>"><br>
  	<button type="submit" name="upload-btn">Update</button>
  </form>
- <a href="edit.php?id=<?php echo $row['id']; ?>">Edit profile</a>
  <form action="logout.php">
  	<button type="submit" name="logout-btn">Logout</button>
  </form>

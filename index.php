@@ -65,7 +65,7 @@ if(isset($_POST['upload-btn']))
 <?php
 if(isset($_GET['logged'])){
 	?>
-	<p style="color:green;font-weight:bold">Welcome user number <?php echo $id; ?>!</p>
+	<p style="color:green;font-weight:bold">Welcome <?php echo $name; ?>!</p>
 	<?php
 }
  ?>

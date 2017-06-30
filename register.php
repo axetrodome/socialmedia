@@ -78,11 +78,13 @@ if($_SERVER['REQUEST_METHOD'] == 'POST'){
 <body>
 	<div style="color:green"><?php echo $success; ?></div>
 <?php
+if(isset($error)){
 	foreach($error as $errors) {
 		?>
 		<div style="color:red"><?php echo $errors ?></div>
 		<?php
 	}
+}
 ?>
 <form method="POST" enctype="multipart/form-data" action="<?php echo htmlspecialchars($_SERVER['PHP_SELF']) ?>">
 	<input type="file" name="profile-image">

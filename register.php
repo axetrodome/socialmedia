@@ -21,7 +21,7 @@ if($_SERVER['REQUEST_METHOD'] == 'POST'){
 		$email = $_POST['email'];
 		$password = $_POST['password'];
 
-		$row = $user->Validations($username,$email);
+		$row = $user->UniqueValidations($username,$email);
 		
 		if(empty($name)){
 			$error[] = 'Please Enter Name';
@@ -29,10 +29,6 @@ if($_SERVER['REQUEST_METHOD'] == 'POST'){
 			$error[] = 'Please Enter Username';
 		}elseif(empty($email)){
 			$error[] = 'Please Enter E-mail';
-		}elseif($user->Email_validation($email)){
-				$error[] = "Invalid E-mail format";
-		}elseif(empty($password)){
-			$error[] = 'Please Enter Password';
 		}elseif(empty($password)){
 			$error[] = 'Please Enter Password';
 		}elseif($row['username'] == $username){
@@ -63,7 +59,6 @@ if($_SERVER['REQUEST_METHOD'] == 'POST'){
 				    else{
 				   	 $error[] = "File is too big";
 				    }
-
 			}else{	
 				$error[] = "Only JPG,PNG,JPEG,GIF are allowed";
 			}
@@ -83,13 +78,11 @@ if($_SERVER['REQUEST_METHOD'] == 'POST'){
 <body>
 	<div style="color:green"><?php echo $success; ?></div>
 <?php
-if(isset($error)){
 	foreach($error as $errors) {
 		?>
 		<div style="color:red"><?php echo $errors ?></div>
 		<?php
 	}
-}
 ?>
 <form method="POST" enctype="multipart/form-data" action="<?php echo htmlspecialchars($_SERVER['PHP_SELF']) ?>">
 	<input type="file" name="profile-image">

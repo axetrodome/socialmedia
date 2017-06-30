@@ -68,7 +68,6 @@ class User{
 			echo $e->getMessage();
 		}
 	}
-
 	public function is_loggedin(){
 		if(isset($_SESSION['user_id'])){
 			return true;
@@ -86,7 +85,7 @@ class User{
 	public function PasswordLength($password){
 		return strlen($password) < 6;
 	}
-	public function Validations($username,$email){
+	public function UniqueValidations($username,$email){
 		$stmt = $this->db->prepare("SELECT * FROM users WHERE username = :username OR email = :email");
 		$stmt->execute(array(':username'=>$username,':email'=>$email));
 		return $stmt->fetch(PDO::FETCH_ASSOC);

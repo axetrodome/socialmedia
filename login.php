@@ -6,7 +6,6 @@ include_once 'db.php';
 if(isset($_POST['login-btn'])){
 	$username = $_POST['user'];
 	$password = $_POST['password'];
-
 	if($user->login($username,$password)){
 		$user->redirect('index.php?logged');
 	}else{

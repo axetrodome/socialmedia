@@ -21,7 +21,7 @@ if($_SERVER['REQUEST_METHOD'] == 'POST'){
 		$email = $_POST['email'];
 		$password = $_POST['password'];
 
-		$row = $user->UniqueValidations($username,$email);
+		$row = $validation->UniqueValidations($username,$email);
 		
 		if(empty($name)){
 			$error[] = 'Please Enter Name';
@@ -35,11 +35,11 @@ if($_SERVER['REQUEST_METHOD'] == 'POST'){
 					$error[] = 'Username was already taken';
 		}elseif($row['email'] == $email){
 				$error[] = 'Email was already taken';
-		}elseif($user->Name_validation($name)){
+		}elseif($validation->Name_validation($name)){
 				$error[] = "Letters and White space Only";
-		}elseif($user->Email_validation($email)){
+		}elseif($validation->Email_validation($email)){
 				$error[] = "Invalid E-mail format";
-		}elseif($user->PasswordLength($password)){
+		}elseif($validation->PasswordLength($password)){
 				$error[] = "Password must contain atleast 6 Characters";
 		}
 		// IMAGE UPLOAD

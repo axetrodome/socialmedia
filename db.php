@@ -6,5 +6,7 @@ try{
 	echo 'failed to connect'. $e->getMessage();
 }
 include_once 'class.user.php';
+include_once 'class.validation.php';
 $user = new User($dbconn);
+$validation =  new Validation($dbconn);
 ?>

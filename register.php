@@ -23,16 +23,40 @@ if($_SERVER['REQUEST_METHOD'] == 'POST'){
 
 		$row = $validation->UniqueValidations($username,$email);
 		
-		if(empty($name)){
-			$error[] = 'Please Enter Name';
-		}elseif(empty($username)){
-			$error[] = 'Please Enter Username';
-		}elseif(empty($email)){
-			$error[] = 'Please Enter E-mail';
-		}elseif(empty($password)){
-			$error[] = 'Please Enter Password';
-		}elseif($row['username'] == $username){
-					$error[] = 'Username was already taken';
+		if(Input::exists()){
+				$validate = $validation->check($_POST,array(
+					'name' => array(
+							'required' => true,
+							'min' => 2,
+							'max' => 50
+						),
+					'username' => array(
+							'required' => true,
+							'min' => 3,
+							'max' => 20,
+						),
+					'email' => array(
+							'required' => true,
+							'min' => 2,
+						),
+					'password' => array(
+							'required' => true,
+							'min' => 6
+						),
+				));
+			if($validation->passed()){
+				// register user
+				echo 'passed';
+			}else{
+				// output errors
+				foreach ($validation->errors() as $errors) {
+					echo $errors,'<br>';
+				}
+			}
+
+		}
+		elseif($row['username'] == $username){
+				$error[] = 'Username was already taken';
 		}elseif($row['email'] == $email){
 				$error[] = 'Email was already taken';
 		}elseif($validation->Name_validation($name)){
@@ -88,9 +112,9 @@ if(isset($error)){
 ?>
 <form method="POST" enctype="multipart/form-data" action="<?php echo htmlspecialchars($_SERVER['PHP_SELF']) ?>">
 	<input type="file" name="profile-image">
-	<input type="text" name="name" placeholder="Name" value="<?php echo (isset($error)) ? $name : '';  ?>">
-	<input type="text" name="username" placeholder="Username" value="<?php echo (isset($error)) ? $username : ''; ?>">
-	<input type="email" name="email" placeholder="E-mail" value="<?php echo (isset($error)) ? $email : ''; ?>">
+	<input type="text" name="name" placeholder="Name" value="<?php echo Input::get('name'); ?>">
+	<input type="text" name="username" placeholder="Username" value="<?php echo Input::get('username'); ?>">
+	<input type="email" name="email" placeholder="E-mail" value="<?php echo Input::get('email'); ?>">
 	<input type="password" name="password" placeholder="Password">
 	<button type="submit" name="submit-btn">Register</button>
 </form>

@@ -7,6 +7,7 @@ try{
 }
 include_once 'class.user.php';
 include_once 'class.validation.php';
+include_once 'Input.php';
 $user = new User($dbconn);
 $validation =  new Validation($dbconn);
 ?>

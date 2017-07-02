@@ -16,10 +16,8 @@ if($_SERVER['REQUEST_METHOD'] == 'POST'){
 		$imgFile = $_FILES['profile-image']['name'];
 		$tmp_dir = $_FILES['profile-image']['tmp_name'];
 		$imgSize = $_FILES['profile-image']['size'];
-		$name = $_POST['name'];
 		$username = $_POST['username'];
 		$email = $_POST['email'];
-		$password = $_POST['password'];
 
 		$row = $validation->UniqueValidations($username,$email);
 		
@@ -53,10 +51,8 @@ if($_SERVER['REQUEST_METHOD'] == 'POST'){
 					echo $errors,'<br>';
 				}
 			}
-
 		}
-
-		elseif($row['username'] == $username){
+		if($row['username'] == $username){
 				$error[] = 'Username was already taken';
 		}elseif($row['email'] == $email){
 				$error[] = 'Email was already taken';

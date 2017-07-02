@@ -44,7 +44,6 @@ Class Validation{
 	public function passed(){
 		return $this->_passed;
 	}
-
 	public function Email_validation($email){
 		return !filter_var($email,FILTER_VALIDATE_EMAIL);
 	}

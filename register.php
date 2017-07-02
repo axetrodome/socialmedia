@@ -55,6 +55,7 @@ if($_SERVER['REQUEST_METHOD'] == 'POST'){
 			}
 
 		}
+
 		elseif($row['username'] == $username){
 				$error[] = 'Username was already taken';
 		}elseif($row['email'] == $email){
